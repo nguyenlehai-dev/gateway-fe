@@ -21,8 +21,17 @@ esac
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "${ROOT_DIR}"
-npm ci
-npm run build
+if command -v npm >/dev/null 2>&1; then
+  npm ci
+  npm run build
+else
+  docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    --volume "${ROOT_DIR}:${ROOT_DIR}" \
+    --workdir "${ROOT_DIR}" \
+    node:20-bookworm \
+    bash -lc 'npm ci && npm run build'
+fi
 
 mkdir -p "${TARGET_DIR}"
 rsync -az --delete "${ROOT_DIR}/dist/" "${TARGET_DIR}/"
