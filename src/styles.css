@@ -1,0 +1,581 @@
+:root {
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+  color: #1b2430;
+  background: #eef2f6;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #eef2f6;
+  color: #1b2430;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #d7dee8;
+  border-radius: 12px;
+  background: #fff;
+  color: #1b2430;
+  padding: 0.9rem 1rem;
+}
+
+textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+pre,
+code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.loadingScreen,
+.loginPage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #eef5f8 0%, #edf0f5 100%);
+}
+
+.loginPanel {
+  width: min(440px, calc(100vw - 32px));
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #dbe2ea;
+  border-radius: 24px;
+  padding: 28px;
+  display: grid;
+  gap: 14px;
+  box-shadow: 0 30px 80px rgba(38, 57, 77, 0.12);
+}
+
+.appKicker {
+  margin: 0;
+  color: #5d6b7a;
+  font-size: 0.9rem;
+}
+
+.softText {
+  margin: 6px 0 0;
+  color: #6b7683;
+}
+
+.appFrame {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+.sidebarShell {
+  background: #f5f6f8;
+  border-right: 1px solid #d8dde6;
+  padding: 18px 0;
+}
+
+.brandBlock {
+  padding: 8px 18px 20px;
+  border-bottom: 1px solid #dde3eb;
+}
+
+.brandBlock h1 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.brandBlock p {
+  margin: 4px 0 0;
+  color: #6f7b88;
+}
+
+.navStack {
+  display: grid;
+  gap: 8px;
+  padding: 18px 12px;
+}
+
+.sidebarItem {
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: transparent;
+  color: #233142;
+}
+
+.sidebarItem.active {
+  background: #dfeef9;
+  color: #275b86;
+}
+
+.mainShell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.topHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 26px;
+  border-bottom: 1px solid #dde3eb;
+  background: rgba(245, 246, 248, 0.92);
+}
+
+.topHeader h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.topHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.basePathTag {
+  color: #6a7581;
+}
+
+.statusBadge {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  border: 1px solid #ead7d9;
+  background: #fff0f1;
+  color: #a44d5b;
+}
+
+.statusBadge.ok {
+  border-color: #d5e7d7;
+  background: #eefaf0;
+  color: #3d7b4b;
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.workspace {
+  padding: 26px;
+  display: grid;
+  gap: 18px;
+}
+
+.callout {
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid #d8e1ea;
+  background: #fff;
+}
+
+.callout.error {
+  border-color: #ecc9ce;
+  background: #fff1f3;
+  color: #9a3045;
+}
+
+.callout.success {
+  border-color: #cfe8d6;
+  background: #effbf3;
+  color: #28623b;
+}
+
+.dashboardGrid,
+.splitView,
+.threePane,
+.playgroundLayout {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboardGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.splitView {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.playgroundLayout {
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+  align-items: start;
+}
+
+.threePane {
+  grid-template-columns: 1.1fr 1.1fr 1fr;
+}
+
+.metricCard,
+.sectionCard {
+  background: #fff;
+  border: 1px solid #dbe1e8;
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0 16px 48px rgba(39, 57, 79, 0.06);
+}
+
+.metricCard span,
+.metricCard p {
+  color: #6d7885;
+}
+
+.metricCard strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 2rem;
+}
+
+.metricCard p {
+  margin: 8px 0 0;
+}
+
+.sectionHead {
+  margin-bottom: 14px;
+}
+
+.sectionHead h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.formStack,
+.tableList,
+.docStack,
+.resultStack,
+.miniFlow {
+  display: grid;
+  gap: 12px;
+}
+
+.twoUp {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.primaryButton {
+  background: linear-gradient(180deg, #3f7cd8 0%, #2a66bf 100%);
+  color: #fff;
+  padding: 11px 16px;
+}
+
+.ghostPill {
+  background: #fff;
+  border: 1px solid #d7dee8;
+  color: #2c3642;
+  padding: 10px 14px;
+}
+
+.compactTop {
+  margin-top: 12px;
+}
+
+.rowCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid #e3e8ef;
+  border-radius: 16px;
+  padding: 14px;
+  background: #fbfcfd;
+}
+
+.rowCard strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.rowMeta {
+  display: grid;
+  gap: 4px;
+  color: #66707c;
+}
+
+.rowMeta p {
+  margin: 0;
+}
+
+.tableBadge {
+  display: inline-flex;
+  align-items: center;
+  height: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef4fb;
+  color: #3a5f85;
+  font-size: 0.85rem;
+}
+
+.modalScrim {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(49, 61, 74, 0.28);
+  padding: 24px;
+}
+
+.systemAuthModal {
+  width: min(520px, calc(100vw - 32px));
+  background: #fff;
+  border: 1px solid #dce3eb;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 30px 90px rgba(28, 44, 61, 0.2);
+}
+
+.modalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modalHead h3 {
+  margin: 0;
+}
+
+.iconButton {
+  background: transparent;
+  color: #6b7784;
+  width: 36px;
+  height: 36px;
+}
+
+.fieldLabel {
+  font-size: 0.92rem;
+  color: #555f6b;
+}
+
+.fieldHelp {
+  margin: -2px 0 0;
+  color: #6b7683;
+  font-size: 0.92rem;
+}
+
+.playgroundPanel,
+.playgroundResultPanel {
+  display: grid;
+  gap: 18px;
+}
+
+.playgroundGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.playgroundGrid.twoCol {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.playgroundField {
+  display: grid;
+  gap: 8px;
+}
+
+.playgroundField > span {
+  font-size: 0.94rem;
+  color: #475466;
+  font-weight: 600;
+}
+
+.playgroundStatusCard {
+  border-radius: 18px;
+  padding: 18px 20px;
+  border: 1px solid #d9e5d3;
+  background: linear-gradient(180deg, #f3fbeb 0%, #edf9e6 100%);
+}
+
+.playgroundStatusCard.error {
+  border-color: #f1d1d4;
+  background: linear-gradient(180deg, #fff5f5 0%, #fff0f0 100%);
+}
+
+.playgroundStatusCard.success strong,
+.playgroundStatusCard.error strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.playgroundStatusCard p {
+  margin: 0;
+  color: #445264;
+}
+
+.playgroundInfoCard {
+  border-radius: 18px;
+  padding: 18px 20px;
+  border: 1px solid #b7d2f1;
+  background: linear-gradient(180deg, #eaf4ff 0%, #e2efff 100%);
+}
+
+.playgroundInfoCard strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #245391;
+}
+
+.playgroundInfoCard p {
+  margin: 0;
+  color: #36567b;
+}
+
+.playgroundActions,
+.playgroundStatusLookup {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.playgroundStatusLookup input {
+  flex: 1;
+}
+
+.resultConsole {
+  border-radius: 18px;
+  background: #111a32;
+  color: #f2f6ff;
+  padding: 18px;
+  min-height: 220px;
+}
+
+.resultConsole pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.keyInputRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.verifyCard {
+  border: 1px solid #ecd7d8;
+  background: #fff4f4;
+  color: #9f4254;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.verifyCard.verified {
+  border-color: #cde4d0;
+  background: #effaf1;
+  color: #2e7343;
+}
+
+.verifyCard strong,
+.verifyCard p {
+  margin: 0;
+}
+
+.verifyCard p {
+  margin-top: 8px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.authLockOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(239, 244, 250, 0.68);
+  backdrop-filter: blur(6px);
+}
+
+.authLockCard {
+  width: min(560px, calc(100vw - 32px));
+  border: 1px solid #dce3eb;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 30px 90px rgba(28, 44, 61, 0.2);
+  padding: 28px;
+}
+
+.authLockCard h3 {
+  margin: 8px 0 12px;
+}
+
+.authLockCard .softText {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 1180px) {
+  .dashboardGrid,
+  .threePane {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .appFrame {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebarShell {
+    border-right: 0;
+    border-bottom: 1px solid #d8dde6;
+  }
+
+  .dashboardGrid,
+  .splitView,
+  .threePane,
+  .playgroundLayout,
+  .playgroundGrid,
+  .twoUp,
+  .keyInputRow {
+    grid-template-columns: 1fr;
+  }
+
+  .playgroundGrid.twoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .topHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .playgroundActions,
+  .playgroundStatusLookup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
