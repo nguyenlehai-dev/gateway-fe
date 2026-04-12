@@ -1,12 +1,19 @@
 import type {
-  ApiKeyRecord,
+  ApiFunction,
   AuthResponse,
   AuthUser,
-  AutomationJob,
-  AutomationPreview,
-  DashboardStats,
-  Profile,
-  ProxyRecord,
+  GatewayExecuteResponse,
+  GatewayKey,
+  GatewayKeyGenerateResponse,
+  GatewayJobStatusResponse,
+  GatewaySubmitResponse,
+  GatewayKeyVerifyResponse,
+  GatewayRequest,
+  ListResponse,
+  Pool,
+  PoolApiKey,
+  User,
+  Vendor,
 } from "./types";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "";
@@ -28,8 +35,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Request failed: ${response.status}`);
+    const contentType = response.headers.get("content-type") ?? "";
+    const detail = contentType.includes("application/json")
+      ? ((await response.json()) as { detail?: string }).detail
+      : await response.text();
+    throw new Error(detail || `Request failed: ${response.status}`);
   }
 
   if (response.status === 204) {
@@ -44,39 +54,54 @@ export const api = {
   clearToken: () => window.localStorage.removeItem(TOKEN_KEY),
   hasToken: () => Boolean(getAuthToken()),
   login: (payload: { username: string; password: string }) =>
-    request<AuthResponse>("/api/auth/login", { method: "POST", body: JSON.stringify(payload) }),
-  getMe: () => request<AuthUser>("/api/auth/me"),
-  getDashboard: () => request<DashboardStats>("/api/dashboard"),
-  getProfiles: () => request<Profile[]>("/api/profiles"),
-  createProfile: (payload: Record<string, unknown>) =>
-    request<Profile>("/api/profiles", { method: "POST", body: JSON.stringify(payload) }),
-  uploadCookies: async (profileId: number, file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    const token = getAuthToken();
-    const response = await fetch(`${API_URL}/api/profiles/${profileId}/cookies`, {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-      body: formData,
-    });
-    if (!response.ok) {
-      throw new Error((await response.text()) || `Upload failed: ${response.status}`);
-    }
-    return response.json();
-  },
-  getProxies: () => request<ProxyRecord[]>("/api/proxies"),
-  createProxy: (payload: Record<string, unknown>) =>
-    request<ProxyRecord>("/api/proxies", { method: "POST", body: JSON.stringify(payload) }),
-  getApiKeys: () => request<ApiKeyRecord[]>("/api/api-keys"),
-  createApiKey: (payload: Record<string, unknown>) =>
-    request<{ api_key: ApiKeyRecord; raw_key: string }>("/api/api-keys", {
+    request<AuthResponse>("/api/v1/auth/login", { method: "POST", body: JSON.stringify(payload) }),
+  getMe: () => request<AuthUser>("/api/v1/auth/me"),
+  getVendors: () => request<ListResponse<Vendor>>("/api/v1/vendors?limit=100"),
+  createVendor: (payload: Record<string, unknown>) =>
+    request<Vendor>("/api/v1/vendors", { method: "POST", body: JSON.stringify(payload) }),
+  deleteVendor: (vendorId: number) => request<void>(`/api/v1/vendors/${vendorId}`, { method: "DELETE" }),
+  getPools: () => request<ListResponse<Pool>>("/api/v1/pools?limit=100"),
+  createPool: (payload: Record<string, unknown>) =>
+    request<Pool>("/api/v1/pools", { method: "POST", body: JSON.stringify(payload) }),
+  deletePool: (poolId: number) => request<void>(`/api/v1/pools/${poolId}`, { method: "DELETE" }),
+  getPoolApiKeys: () => request<ListResponse<PoolApiKey>>("/api/v1/pool-api-keys?limit=100"),
+  createPoolApiKey: (payload: Record<string, unknown>) =>
+    request<PoolApiKey>("/api/v1/pool-api-keys", { method: "POST", body: JSON.stringify(payload) }),
+  deletePoolApiKey: (apiKeyId: number) => request<void>(`/api/v1/pool-api-keys/${apiKeyId}`, { method: "DELETE" }),
+  getGatewayKeys: () => request<ListResponse<GatewayKey>>("/api/v1/gateway-keys"),
+  generateGatewayKey: (payload: { pool_id: number; name: string }) =>
+    request<GatewayKeyGenerateResponse>("/api/v1/gateway-keys/generate", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  getJobs: () => request<AutomationJob[]>("/api/jobs"),
-  createJob: (payload: Record<string, unknown>) =>
-    request<AutomationJob>("/api/jobs", { method: "POST", body: JSON.stringify(payload) }),
-  runJob: (jobId: number) =>
-    request<AutomationJob>(`/api/jobs/${jobId}/run`, { method: "POST" }),
-  getPreview: (profileId: number) => request<AutomationPreview>(`/api/jobs/preview/${profileId}`),
+  deleteGatewayKey: (gatewayKeyId: number) =>
+    request<void>(`/api/v1/gateway-keys/${gatewayKeyId}`, { method: "DELETE" }),
+  verifyGatewayKey: (gateway_api_key: string) =>
+    request<GatewayKeyVerifyResponse>("/api/v1/gateway-keys/verify", {
+      method: "POST",
+      body: JSON.stringify({ gateway_api_key }),
+    }),
+  getApiFunctions: () => request<ListResponse<ApiFunction>>("/api/v1/api-functions?limit=100"),
+  createApiFunction: (payload: Record<string, unknown>) =>
+    request<ApiFunction>("/api/v1/api-functions", { method: "POST", body: JSON.stringify(payload) }),
+  deleteApiFunction: (apiFunctionId: number) =>
+    request<void>(`/api/v1/api-functions/${apiFunctionId}`, { method: "DELETE" }),
+  getRequests: () => request<ListResponse<GatewayRequest>>("/api/v1/gateway/requests?limit=100"),
+  getUsers: () => request<ListResponse<User>>("/api/v1/users?limit=100"),
+  createUser: (payload: Record<string, unknown>) =>
+    request<User>("/api/v1/users", { method: "POST", body: JSON.stringify(payload) }),
+  executeFunction: (functionCode: string, payload: Record<string, unknown>) =>
+    request<GatewayExecuteResponse>(`/api/v1/gateway/functions/${functionCode}/execute`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  submitFunction: (functionCode: string, payload: Record<string, unknown>) =>
+    request<GatewaySubmitResponse>(`/api/v1/gateway/functions/${functionCode}/submit`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  getRequestStatus: (requestId: string) =>
+    request<GatewayJobStatusResponse>(`/api/v1/gateway/requests/${requestId}/status`),
+  retryRequest: (requestId: string) =>
+    request<GatewayJobStatusResponse>(`/api/v1/gateway/requests/${requestId}/retry`, { method: "POST" }),
 };

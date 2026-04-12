@@ -1,0 +1,53 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - staging
+      - prod
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ github.ref_name }}
+    steps:
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          if [ "${TARGET_BRANCH}" = "prod" ]; then
+            echo "${{ secrets.PROD_SSH_KEY }}" > ~/.ssh/deploy_key
+            echo "${{ secrets.PROD_SSH_HOST }}" > /tmp/deploy_host
+            echo "${{ secrets.PROD_SSH_USER }}" > /tmp/deploy_user
+            echo "${{ secrets.PROD_FE_PATH }}" > /tmp/deploy_path
+          else
+            echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/deploy_key
+            echo "${{ secrets.DEV_SSH_HOST }}" > /tmp/deploy_host
+            echo "${{ secrets.DEV_SSH_USER }}" > /tmp/deploy_user
+            echo "${{ secrets.DEV_FE_PATH }}" > /tmp/deploy_path
+          fi
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$(cat /tmp/deploy_host)" >> ~/.ssh/known_hosts
+
+      - name: Deploy frontend on target VM
+        run: |
+          HOST="$(cat /tmp/deploy_host)"
+          USER="$(cat /tmp/deploy_user)"
+          PATH_ON_SERVER="$(cat /tmp/deploy_path)"
+          ENV_NAME="${TARGET_BRANCH}"
+          if [ "${ENV_NAME}" = "prod" ]; then
+            ENV_NAME="prod"
+          else
+            ENV_NAME="staging"
+          fi
+
+          ssh -i ~/.ssh/deploy_key "${USER}@${HOST}" "
+            set -euo pipefail
+            cd '${PATH_ON_SERVER}'
+            git fetch origin
+            git checkout '${TARGET_BRANCH}'
+            git pull --ff-only origin '${TARGET_BRANCH}'
+            chmod +x scripts/deploy-static.sh
+            ./scripts/deploy-static.sh '${ENV_NAME}'
+          "
